@@ -18,6 +18,8 @@ services:
             - "fpm:fpm"
     ports:
             - "8888:8888"
+    volumes:
+            - "/tmp/nginx_log:/tmp/nginx_log"
     networks:
       back:
         ipv4_address: 172.16.238.2

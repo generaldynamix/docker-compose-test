@@ -1,0 +1,20 @@
+FROM ubuntu:18.04
+
+RUN apt-get update -y && apt-get install -y software-properties-common && apt-add-repository -y ppa:nginx/stable && apt-add-repository -y universe && apt-get update -y && apt-get install -y nginx php-fpm supervisor
+
+RUN mkdir -p /var/www && chown -R www-data:www-data /var/www
+RUN mkdir -p /var/log/supervisord
+RUN mkdir -p /usr/share/nginx/logs && chown -R www-data:www-data /usr/share/nginx
+RUN mkdir -p /run/php && chown -R www-data:www-data /run/php
+
+ADD ./conf/nginx-fpm.conf /etc/nginx/nginx.conf
+ADD ./conf/fastcgi.conf /etc/nginx/fastcgi.conf
+ADD ./conf/supervisord.conf /etc/supervisord.conf
+ADD ./conf/index.php /var/www/index.php
+ADD ./conf/mime.types /etc/nginx/mime.types
+ADD ./conf/fpm.conf /etc/fpm.conf
+
+EXPOSE 80
+
+CMD ["/usr/bin/supervisord", "-n"]
+

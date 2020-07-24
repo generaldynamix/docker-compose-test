@@ -1,0 +1,35 @@
+version: "3.3"
+services:
+  fpm:
+    build:
+      dockerfile: Dockerfile.fpm
+      context: .
+    ports:
+            - "80:80"
+    networks:
+      back:
+        ipv4_address: 172.16.238.3
+
+  proxy:
+    build:
+      dockerfile: Dockerfile.nginx
+      context: .
+    links:
+            - "fpm:fpm"
+    ports:
+            - "8888:8888"
+    networks:
+      back:
+        ipv4_address: 172.16.238.2
+      default:
+
+networks:
+  back:
+    driver: bridge
+    internal: true
+    ipam:
+     driver: default
+     config:
+       - subnet: 172.16.238.0/24
+  default:
+    driver: bridge
